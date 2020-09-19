@@ -1,0 +1,167 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:views="clr-namespace:AmazoneShowProduct.ContentViews"
+             xmlns:sharedTransition="clr-namespace:Plugin.SharedTransitions;assembly=Plugin.SharedTransitions"
+             xmlns:pancake="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView" x:Name="RootPage"
+             xmlns:converter="clr-namespace:AmazoneShowProduct.Converters"
+             x:Class="AmazoneShowProduct.Views.ProductDetailsPage" NavigationPage.HasNavigationBar="False">
+
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converter:BoolToStringConverter x:Key="inStockTextConverter" trueString="Available" falseString="Unavalaible" />
+
+            <converter:BoolToStringConverter x:Key="inStockImageConverter" trueString="tick" falseString="cross"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="370" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="95" />
+        </Grid.RowDefinitions>
+
+        <!--  background image  -->
+        <Image
+            Grid.RowSpan="3"
+            Aspect="Fill"
+            Source="header_background" />
+
+        <!--  title bar  -->
+        <views:TitleBar />
+       
+        <!--  main content  -->
+        <BoxView Grid.Row="1"  BackgroundColor="White" />
+
+        <Grid
+            Grid.Row="1"
+            Margin="30,30,0,0"
+            RowSpacing="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Label Text="CHOOSE COLOR"  /> <!--Style="{StaticResource ProductInfoHeader}"-->
+
+            <!--  color picker  -->
+            <ScrollView
+                Grid.Row="1"
+                HorizontalScrollBarVisibility="Never"
+                Orientation="Horizontal">
+                <StackLayout BindableLayout.ItemsSource="{Binding Variations}" Orientation="Horizontal">
+
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <Grid HeightRequest="80" WidthRequest="80">
+                                <Frame
+                                    Padding="0"
+                                    BorderColor="#DDDDDD"
+                                    CornerRadius="35"
+                                    HasShadow="False"
+                                    HeightRequest="70"
+                                    HorizontalOptions="Center"
+                                    IsVisible="{Binding IsSelected}"
+                                    VerticalOptions="Center"
+                                    WidthRequest="70" />
+                                <BoxView
+                                    BackgroundColor="{Binding ColorHex}"
+                                    CornerRadius="25"
+                                    HeightRequest="50"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center"
+                                    WidthRequest="50" />
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding BindingContext.VariationSelectedCommand, Source={x:Reference RootPage}}" 
+                                                          CommandParameter="{Binding .}" /> 
+                                </Grid.GestureRecognizers> <!---->
+                            </Grid>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </StackLayout>
+            </ScrollView>
+
+            <Label
+                Grid.Row="2"
+                
+                Text="DESCRIPTION" />  
+            <ScrollView
+                Grid.Row="3"
+                Padding="0,0,0,30"
+                Orientation="Vertical">
+                <Label
+                    Margin="0,0,20,0"
+                   
+                    Text="{Binding Description}" /> <!--Style="{StaticResource ProductDescription}"-->
+            </ScrollView>
+            <pancake:PancakeView Grid.Row="3" BackgroundGradientAngle="0">
+                <pancake:PancakeView.BackgroundGradientStops>
+                    <pancake:GradientStopCollection>
+                        <pancake:GradientStop Offset="0" Color="Transparent" />
+                        <pancake:GradientStop Offset=".5" Color="Transparent" />
+                        <pancake:GradientStop Offset="1" Color="White" />
+                    </pancake:GradientStopCollection>
+                </pancake:PancakeView.BackgroundGradientStops>
+            </pancake:PancakeView>
+        </Grid>
+
+
+        <StackLayout  
+            Margin="30,80,0,0"
+            Spacing="0"
+            VerticalOptions="Start">
+            <Label  Text="B239438" TextColor="White"/> <!--Style="{StaticResource ProductCode}"-->
+            <Label Text="{Binding Name}" TextColor="White" /> <!--Style="{StaticResource ProductName}"-->
+            <StackLayout
+                Margin="0,20,0,0" HorizontalOptions="Start"
+                Orientation="Horizontal"
+                Spacing="10">
+
+                <Image Source="{Binding InStock  , Converter={StaticResource inStockImageConverter}}" />
+                <Label   Text="{Binding InStock, Converter={StaticResource inStockTextConverter}}" TextColor="White" FontSize="17"/>
+            </StackLayout >
+        </StackLayout>
+
+
+        <!--  chair image  -->
+       
+        <Image
+          sharedTransition:Transition.Name="SelectedItemImage"
+            HorizontalOptions="End"
+            Source="{Binding Image}"
+            TranslationY="50"
+            VerticalOptions="End" />
+
+        <pancake:PancakeView
+            Padding="20"
+            BackgroundColor="#EAD049"
+            CornerRadius="0,10,0,10"
+            HorizontalOptions="Start"
+            TranslationY="-40"
+            VerticalOptions="End">
+
+            <Label Text="{Binding Price, StringFormat='{0:c}'}" /> 
+        </pancake:PancakeView>
+
+
+
+
+
+
+
+        <!--  add to cart button  -->
+        <BoxView
+            Grid.Row="2"
+            HorizontalOptions="Fill"
+            VerticalOptions="Fill"
+            Color="#A7C64E" />
+        <Label
+            Grid.Row="2"
+            HorizontalOptions="Center"
+           
+            Text="{Binding Price, StringFormat='Add to cart - {0:C}'}"
+            VerticalOptions="Center" /> <!--Style="{StaticResource ButtonTextStyle}"-->
+
+    </Grid>
+</ContentPage>
